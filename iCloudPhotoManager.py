@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 import getpass
 import sys
+import os
+from datetime import datetime
 from pyicloud import PyiCloudService
 
-def authenticate_icloud():
+def authenticate_icloud(username, password=None):
     """iCloud에 인증하고 PyiCloudService 객체를 반환합니다."""
-    username = input("iCloud 이메일 주소를 입력하세요: ")
-    password = getpass.getpass("iCloud 비밀번호를 입력하세요: ")
-    
+    #username = input("iCloud 이메일 주소를 입력하세요: ")
+    #password = getpass.getpass("iCloud 비밀번호를 입력하세요: ")
+    if not password:
+        password = getpass.getpass("iCloud 비밀번호를 입력하세요: ")
+
     try:
         api = PyiCloudService(username, password)
     except Exception as e:
@@ -97,12 +101,9 @@ def get_photos_by_date_range(api, start_date, end_date):
             processed += 1
             if processed % 100 == 0:
                 print(f"진행 중: {processed}/{total} 확인 중...")
-            
-            # 사진 생성 날짜 확인
-            created_date = photo.created
-            
-            # 지정된 날짜 범위 내에 있는지 확인
-            if start_date <= created_date <= end_date:
+
+            # 사진 생성 날짜가 지정된 날짜 범위 내에 있는지 확인
+            if start_date <= photo.created <= end_date:
                 filtered_photos.append(photo)
         
         print(f"날짜 범위 내 미디어 수: {len(filtered_photos)}")
