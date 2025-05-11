@@ -20,7 +20,8 @@ def main():
     download = input("\n사진을 다운로드하시겠습니까? (y/n): ").lower()
     if download == 'y':
         limit = int(input("다운로드할 사진 수를 입력하세요: "))
-        save_photos(api, limit=limit)
+        #download_photos(api, limit=limit)
+        download_photos_by_date(api, limit=limit)
 
 if __name__ == "__main__":
     # 필요한 패키지 확인
