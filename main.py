@@ -46,24 +46,24 @@ def main():
         return
     
     # 사진 정보 가져오기
-    photos_info = get_photos_info(filtered_photos)
+    # photos_info = get_photos_info(filtered_photos)
     
-    # 사진 정보 출력
-    if not args.quiet:
-        print("\n검색된 미디어 목록:")
-        for i, photo in enumerate(photos_info, 1):
-            print(f"{i}. [{photo['type']}] {photo['filename']} - 생성일: {photo['created']}, 크기: {photo['dimensions']}, 용량: {photo['size_kb']}KB")
-    else:
-        print(f"검색된 미디어 개수: {len(photos_info)}")
+    # # 사진 정보 출력
+    # if not args.quiet:
+    #     print("\n검색된 미디어 목록:")
+    #     for i, photo in enumerate(photos_info, 1):
+    #         print(f"{i}. [{photo['type']}] {photo['filename']} - 생성일: {photo['created']}, 크기: {photo['dimensions']}, 용량: {photo['size_kb']}KB")
+    # else:
+    #     print(f"검색된 미디어 개수: {len(photos_info)}")
     
-    # 다운로드 여부 확인
-    if args.list_only:
-        get_photos_by_date_range(api, start_date, end_date)
-    else:
-        if not args.quiet:
-            download = input("\n이 미디어들을 다운로드하시겠습니까? (y/n): ").lower()
-            if download == 'y':
-                download_photos_by_date(api, args.download_dir, start_date, end_date, args.max_downloads, args.quiet)
+    # # 다운로드 여부 확인
+    # if args.list_only:
+    #     get_photos_by_date_range(api, start_date, end_date)
+    # else:
+    #     if not args.quiet:
+    #         download = input("\n이 미디어들을 다운로드하시겠습니까? (y/n): ").lower()
+    #         if download == 'y':
+    #             download_photos_by_date(api, args.download_dir, start_date, end_date, args.max_downloads, args.quiet)
 
 if __name__ == "__main__":
     # 필요한 패키지 확인

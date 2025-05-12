@@ -103,7 +103,7 @@ def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_dat
 
             if processed % 100 == 0:
                 print(f"진행 중: {processed}/{total} 확인 중...")
-            
+
             # iCloud의 시간을 UTC로 변환
             datetime_created: datetime = photo.created.astimezone(timezone.utc)
             
@@ -114,10 +114,11 @@ def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_dat
             # print(f"datetime_created <= end_date: {datetime_created <= end_date}")
 
             # 사진 생성 날짜가 지정된 날짜 범위 내에 있는지 확인
-            #if start_date <= datetime_created <= end_date:
-            filtered_photos.append(photo)
-            if processed >= limit:
-                break
+            if start_date <= datetime_created < end_date:
+                filtered_photos.append(photo)
+                print_photo_info(photo)
+                # if processed >= limit:
+                #     break
 
         print(f"날짜 범위 내 미디어 수: {len(filtered_photos)}")
         return filtered_photos
@@ -125,6 +126,45 @@ def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_dat
     except Exception as e:
         print(f"사진 필터링 중 오류 발생: {e}")
         return []
+
+def print_photo_info(photo):
+    """
+    사진 목록에서 각 사진의 정보를 추출합니다.
+    
+    :param photos_list: 사진 객체 목록
+    :return: 사진 정보 딕셔너리 목록
+    """
+    # photos_info = []
+    
+    # 미디어 타입별 확장자 정의
+    photo_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.heic', '.heif', '.tiff', '.webp'}
+    video_extensions = {'.mp4', '.mov', '.avi', '.wmv', '.flv', '.mkv', '.m4v', '.3gp'}
+    
+    # 파일 확장자 추출 (소문자로 변환)
+    file_extension = os.path.splitext(photo.filename.lower())[1]
+    
+    # 확장자 기반으로 미디어 타입 판단
+    if file_extension in photo_extensions:
+        type = "사진"
+    elif file_extension in video_extensions:
+        type = "비디오"
+    else:
+        type = "알 수 없음"
+        print(f"알 수 없는 파일 형식: {photo.filename}")
+    
+    photo_info = {
+        'filename': photo.filename,
+        'created': photo.created.strftime('%Y-%m-%d %H:%M:%S'),
+        'dimensions': f"{photo.width}x{photo.height}" if hasattr(photo, 'width') and hasattr(photo, 'height') else "정보 없음",
+        'size_kb': round(photo.size / 1024, 2) if hasattr(photo, 'size') else 0,
+        'type': type
+    }
+
+    print("\n검색된 미디어 목록:")
+    # for i, photo in enumerate(photo_info, 1):
+    print(f"[{photo_info['type']}] {photo_info['filename']} - 생성일: {photo_info['created']}, 크기: {photo_info['dimensions']}, 용량: {photo_info['size_kb']}KB")
+    # photos_info.append(photo_info)
+    # return photos_info
 
 def get_photos_info(photos_list):
     """
