@@ -2,8 +2,9 @@
 import getpass
 import sys
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pyicloud import PyiCloudService
+from pyicloud.services.photos import PhotoAsset
 
 def authenticate_icloud(username: str, password: str = None):
     """iCloud에 인증하고 PyiCloudService 객체를 반환합니다."""
@@ -104,8 +105,10 @@ def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_dat
             if processed % 100 == 0:
                 print(f"진행 중: {processed}/{total} 확인 중...")
 
-            # iCloud의 시간을 UTC로 변환
-            datetime_created: datetime = photo.created.astimezone(timezone.utc)
+            # iCloud의 시간을 UTC로 변환하고 KST로 변환
+            # datetime_created: datetime = photo.created.astimezone(timezone.utc)
+            # datetime_created: datetime = photo.created.astimezone(timezone.utc).replace(tzinfo=timezone.utc) + timedelta(hours=9)
+            datetime_created: datetime = photo.created.astimezone(timezone.utc) + timedelta(hours = 9)
             
             # print(f"datetime_created: {datetime_created}")
             # print(f"start_date: {start_date}")
@@ -116,7 +119,8 @@ def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_dat
             # 사진 생성 날짜가 지정된 날짜 범위 내에 있는지 확인
             if start_date <= datetime_created < end_date:
                 filtered_photos.append(photo)
-                print_photo_info(photo)
+                download_photo(photo)
+                # print_photo_info(photo)
                 # if processed >= limit:
                 #     break
 
@@ -151,10 +155,11 @@ def print_photo_info(photo):
     else:
         type = "알 수 없음"
         print(f"알 수 없는 파일 형식: {photo.filename}")
-    
+    # datetime_created: datetime = photo.created.astimezone(timezone.utc) + timedelta(hours = 9)
     photo_info = {
         'filename': photo.filename,
-        'created': photo.created.strftime('%Y-%m-%d %H:%M:%S'),
+        # 'created': photo.created.strftime('%Y-%m-%d %H:%M:%S'),
+        'created': photo.created.astimezone(timezone.utc) + timedelta(hours = 9),
         'dimensions': f"{photo.width}x{photo.height}" if hasattr(photo, 'width') and hasattr(photo, 'height') else "정보 없음",
         'size_kb': round(photo.size / 1024, 2) if hasattr(photo, 'size') else 0,
         'type': type
@@ -217,7 +222,7 @@ def get_photos_info(photos_list):
     
     return photos_info
 
-def download_photos_by_date(api, download_dir="./downloaded_photos", start_date=None, end_date=None):
+def download_photos_by_date(api, download_dir="./downloaded_photos", start_date=None, end_date=None, limit: int = 10):
     """
     특정 날짜 범위 내의 사진을 다운로드합니다.
     
@@ -306,3 +311,30 @@ def download_photos(api, download_dir="./downloaded_photos", limit=10):
         print(f"총 {count}개의 사진을 다운로드했습니다.")
     except Exception as e:
         print(f"사진 다운로드 중 오류 발생: {e}")
+
+def download_photo(photo: PhotoAsset, download_dir="./downloaded_photos"):
+    """
+    단일 사진을 로컬 디렉토리에 다운로드합니다.
+    
+    :param photo: PhotoAsset 객체
+    :param download_dir: 다운로드할 디렉토리 (기본값: ./downloaded_photos)
+    :return: 다운로드된 파일의 전체 경로
+    """
+    # 다운로드 디렉토리가 없으면 생성
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+    
+    try:
+        # 파일명이 중복되지 않도록 날짜를 접두사로 추가
+        date_prefix = (photo.created.astimezone(timezone.utc) + timedelta(hours=9)).strftime('%Y%m%d_%H%M%S_')
+        filename = os.path.join(download_dir, date_prefix + photo.filename)
+        
+        print(f"다운로드 중: {photo.filename}")
+        with open(filename, 'wb') as f:
+            f.write(photo.download().raw.read())
+            
+        print(f"다운로드 완료: {filename}")
+        return filename
+    except Exception as e:
+        print(f"'{photo.filename}' 다운로드 중 오류 발생: {e}")
+        return None
