@@ -30,6 +30,8 @@ def main():
     start_date = parse_date(args.start_date)
     end_date = parse_date(args.end_date)
     #print(f"start_date: {start_date}, end_date: {end_date}")
+    download_dir = args.download_dir
+    # print(f"download_dir: {download_dir}")
     
     # 종료 날짜는 해당 일의 마지막 시간으로 설정 (시간이 지정되지 않은 경우)
     if ' ' not in args.end_date:
@@ -39,7 +41,7 @@ def main():
     print(f"\n{start_date.strftime('%Y-%m-%d %H:%M:%S')}부터 {end_date.strftime('%Y-%m-%d %H:%M:%S')}까지의 미디어를 검색합니다...\n")
     
     # 날짜 범위 내의 사진 가져오기
-    filtered_photos = get_photos_by_date_range(api, start_date, end_date)
+    filtered_photos = get_photos_by_date_range(api, start_date, end_date, download_dir = download_dir)
     
     if not filtered_photos:
         print("지정된 날짜 범위 내에 미디어가 없습니다.")

@@ -78,7 +78,7 @@ def get_photos_list(api: PyiCloudService, limit: int = 100):
         print(f"사진 목록을 가져오는 중 오류 발생: {e}")
         return []
 
-def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_date: datetime, limit: int = 10):
+def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_date: datetime, limit: int = 10, download_dir: str = "./downloaded_photos"):
     """
     특정 날짜 범위 내의 사진과 동영상을 필터링합니다.
     
@@ -119,7 +119,7 @@ def get_photos_by_date_range(api: PyiCloudService, start_date: datetime, end_dat
             # 사진 생성 날짜가 지정된 날짜 범위 내에 있는지 확인
             if start_date <= datetime_created < end_date:
                 filtered_photos.append(photo)
-                download_photo(photo)
+                download_photo(photo, download_dir)
                 # print_photo_info(photo)
                 # if processed >= limit:
                 #     break
