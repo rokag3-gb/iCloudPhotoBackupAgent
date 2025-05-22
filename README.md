@@ -12,6 +12,9 @@
 
 iCloudPhotoBackupAgent는 iCloud에 저장된 사진과 동영상을 로컬 컴퓨터로 쉽게 백업할 수 있는 pyicloud(0.10.2) 기반 애플리케이션입니다. 2단계 인증(MFA)도 지원합니다.
 
+pyicloud 사랑해요❤️<br>
+https://pypi.org/project/pyicloud/
+
 ## ✨ Features
 
 - 📱 iCloud 사진 및 동영상 백업
@@ -47,6 +50,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
+다양한 형태로 argument를 추가하여 사용할 수 있습니다. --start-date와 --end-date은 KST 기준 입니다. --download-dir 은 생략 시 './downloaded_photos' 으로 인식됩니다.
 
 ```bash
 python main.py --username {username}
@@ -57,6 +61,12 @@ python main.py --username {username} --password {password} --start-date {yyyy-MM
 
 python main.py --username {username} --password {password} --start-date {yyyy-MM-dd} --end-date {yyyy-MM-dd} --download-dir {download-dir}
 ```
+
+작동한 결과 모습
+
+![](terminal2.png)
+
+![](explorer.png)
 
 ## 📦 Dependencies
 
