@@ -70,7 +70,9 @@ python main.py --username {username} --password {password} --start-date {yyyy-MM
 
 ## 📦 Dependencies
 
-- pyicloud==0.10.2
+- pyicloud==0.10.2 (MIT License)
+  - Copyright (c) 2015 PickledBrain
+  - https://github.com/pickledbrain/pyicloud
 
 ## 🤝 Contributing
 
