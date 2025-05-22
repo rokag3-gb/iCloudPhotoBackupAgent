@@ -32,11 +32,10 @@ def main():
     #print(f"start_date: {start_date}, end_date: {end_date}")
     download_dir = args.download_dir
     # print(f"download_dir: {download_dir}")
-    
+
     # 종료 날짜는 해당 일의 마지막 시간으로 설정 (시간이 지정되지 않은 경우)
     if ' ' not in args.end_date:
-        # end_date = datetime(end_date.year, end_date.month, end_date.day, 23, 59, 59)
-        end_date = datetime(end_date.year, end_date.month, end_date.day, 0, 0, 0, tzinfo=timezone.utc) + timedelta(days=1)
+        end_date = datetime(end_date.year, end_date.month, end_date.day, 23, 59, 59, tzinfo=timezone.utc) + timedelta(days=1)
     
     print(f"\n{start_date.strftime('%Y-%m-%d %H:%M:%S')}부터 {end_date.strftime('%Y-%m-%d %H:%M:%S')}까지의 미디어를 검색합니다...\n")
     
